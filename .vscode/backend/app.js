@@ -22,3 +22,14 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+const authRoutes = require("./routes/auth");
+const authMiddleware = require("./middleware/auth");
+
+// ... (después de app.use(express.json()))
+app.use("/api/auth", authRoutes);
+
+// Ejemplo de ruta protegida:
+app.get("/api/protected", authMiddleware, (req, res) => {
+  res.json({ message: "Ruta protegida", user: req.user });
+});

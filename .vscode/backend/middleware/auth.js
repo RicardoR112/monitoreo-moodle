@@ -41,8 +41,6 @@ router.post("/login", async (req, res) => {
 
 module.exports = router;
 
-const jwt = require("jsonwebtoken");
-
 const auth = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) return res.status(401).json({ error: "Acceso denegado" });
@@ -57,3 +55,7 @@ const auth = (req, res, next) => {
 };
 
 module.exports = auth;
+
+const response = await axios.get(
+  `${MOODLE_URL}?wstoken=${TOKEN}&wsfunction=core_enrol_get_enrolled_users&courseid=${courseId}`
+);

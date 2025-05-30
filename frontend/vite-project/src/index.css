@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+/* En tu archivo CSS principal, por ejemplo, index.css o globals.css */
+@keyframes pulseOnce {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-once {
+  animation: pulseOnce 1s ease-out forwards; /* 'forwards' mantiene el estado final de la animación */
+}
+
+
+/* En tu archivo CSS principal, por ejemplo, index.css o globals.css */
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.5s ease-out;
+}
+
+/* Animación para el fade-in del modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Animación para el icono de advertencia */
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Mantén también la animación del icono del login si la tenías */
+@keyframes bounceIn {
+  0%, 20%, 40%, 60%, 80%, 100% {
+    transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+  0% {
+    opacity: 0;
+    transform: scale3d(.3, .3, .3);
+  }
+  20% {
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    transform: scale3d(.9, .9, .9);
+  }
+  60% {
+    opacity: 1;
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    transform: scale3d(.97, .97, .97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounceIn 1s;
+}
+
+
+
+
+
+/* Tus animaciones personalizadas existentes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+
+
+/* NUEVA CLASE PARA EL BACKDROP BLUR MANUAL */
+.custom-backdrop-blur {
+  backdrop-filter: blur(8px); /* Puedes ajustar el valor de blur: 4px, 8px, 12px, etc. */
+  -webkit-backdrop-filter: blur(8px); /* Para asegurar compatibilidad con navegadores basados en WebKit (Chrome, Safari) */
+}
+
+@layer utilities {
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out forwards;
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0%);
+    }
+  }
+}

@@ -2,10 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { jsPDF } from "jspdf";
 import emailjs from "@emailjs/browser";
 
-// No necesitamos las constantes BASE64 aquí, las cargaremos en tiempo de ejecución
-// const UFPS_LOGO_BASE64 = "";
-// const FIRMA_DOCENTE_BASE64 = "";
-
 const StudentDetail = ({ student, onClose }) => {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [messageText, setMessageText] = useState("");
@@ -41,20 +37,18 @@ const StudentDetail = ({ student, onClose }) => {
     return null;
   }
 
-  // Función auxiliar para cargar una imagen desde una URL y convertirla a Data URL (Base64)
-  // Ahora devuelve también las dimensiones originales de la imagen
   const getImageDataUrl = (url) => {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'Anonymous'; // Importante para evitar problemas de CORS
+      img.crossOrigin = "Anonymous";
       img.onload = () => {
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
         resolve({
-          dataUrl: canvas.toDataURL('image/png'), // Ajusta 'image/png' según el tipo de tu imagen
+          dataUrl: canvas.toDataURL("image/png"),
           width: img.width,
           height: img.height,
         });
@@ -77,29 +71,21 @@ const StudentDetail = ({ student, onClose }) => {
         day: "numeric",
       });
 
-      // --- Rutas de las imágenes estáticas en la carpeta public ---
-      // Revisa estas rutas. Si están directamente en 'public', la ruta es '/ufps-logo.png'
-      // Si están en 'public/images', la ruta es '/images/ufps-logo.png'
-      const UFPS_LOGO_PATH = "/images/ufps-logo.png"; // Ajustado a '/images/'
-      const FIRMA_DOCENTE_PATH = "/images/firma-prueba.png"; // Ajustado a '/images/'
+      const UFPS_LOGO_PATH = "/public/ufps-logo.png";
+      const FIRMA_DOCENTE_PATH = "/public/firma-prueba.png";
 
-      // --- Cargar imágenes y obtener sus datos (Data URL y dimensiones) ---
       const ufpsLogoInfo = await getImageDataUrl(UFPS_LOGO_PATH);
       const firmaDocenteInfo = await getImageDataUrl(FIRMA_DOCENTE_PATH);
 
-      // --- Variables para márgenes y posición ---
-      const margin = 20; // Margen general para los lados
-      let currentY = margin; // Posición Y actual, se irá incrementando
+      const margin = 20;
+      let currentY = margin;
 
-      // --- Encabezado del PDF ---
-      // Calcular dimensiones para el logo manteniendo la relación de aspecto
-      const logoMaxWidth = 60; // Ancho máximo deseado para el logo en el PDF
-      const logoMaxHeight = 30; // Altura máxima deseada para el logo en el PDF
+      const logoMaxWidth = 60;
+      const logoMaxHeight = 30;
 
       let logoWidth = ufpsLogoInfo.width;
       let logoHeight = ufpsLogoInfo.height;
 
-      // Escalar el logo para que quepa en el ancho y alto máximos manteniendo el aspecto
       const aspectRatio = logoWidth / logoHeight;
       if (logoWidth > logoMaxWidth) {
         logoWidth = logoMaxWidth;
@@ -110,45 +96,82 @@ const StudentDetail = ({ student, onClose }) => {
         logoWidth = logoHeight * aspectRatio;
       }
 
-      // Centrar el logo horizontalmente
       const logoX = (doc.internal.pageSize.getWidth() - logoWidth) / 2;
 
-      doc.addImage(ufpsLogoInfo.dataUrl, "PNG", logoX, currentY, logoWidth, logoHeight);
-      currentY += logoHeight + 8; // Espacio después del logo (ajustado por la altura real)
+      doc.addImage(
+        ufpsLogoInfo.dataUrl,
+        "PNG",
+        logoX,
+        currentY,
+        logoWidth,
+        logoHeight
+      );
+      currentY += logoHeight + 8;
 
       doc.setFontSize(10);
-      doc.setTextColor(50, 50, 50); // Color de texto un poco más suave
-      doc.text("UNIVERSIDAD FRANCISCO DE PAULA SANTANDER", doc.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
+      doc.setTextColor(50, 50, 50);
+      doc.text(
+        "UNIVERSIDAD FRANCISCO DE PAULA SANTANDER",
+        doc.internal.pageSize.getWidth() / 2,
+        currentY,
+        { align: "center" }
+      );
       currentY += 5;
-      doc.text("FACULTAD DE INGENIERÍA", doc.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
+      doc.text(
+        "FACULTAD DE INGENIERÍA",
+        doc.internal.pageSize.getWidth() / 2,
+        currentY,
+        { align: "center" }
+      );
       currentY += 5;
-      doc.text("UNIDAD DE EDUCACIÓN VIRTUAL", doc.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
+      doc.text(
+        "UNIDAD DE EDUCACIÓN VIRTUAL",
+        doc.internal.pageSize.getWidth() / 2,
+        currentY,
+        { align: "center" }
+      );
       currentY += 5;
-      doc.text("PROYECTO: MONITOREO DE ESTUDIANTES DE MOODLE", doc.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-      currentY += 12; // Más espacio antes de la fecha
+      doc.text(
+        "PROYECTO: MONITOREO DE ESTUDIANTES DE MOODLE",
+        doc.internal.pageSize.getWidth() / 2,
+        currentY,
+        { align: "center" }
+      );
+      currentY += 12;
 
       doc.setFontSize(10);
       doc.text(`Fecha del Informe: ${fechaHoy}`, margin, currentY);
-      currentY += 18; // Espacio después de la fecha y antes del título principal
+      currentY += 18;
 
-      // --- Título Principal ---
-      doc.setFontSize(18); // Título más grande
-      doc.setTextColor(30, 30, 30); // Color más oscuro para el título
-      doc.text("INFORME DE SEGUIMIENTO DE ESTUDIANTE", doc.internal.pageSize.getWidth() / 2, currentY, { align: 'center' });
-      currentY += 20; // Más espacio después del título
+      doc.setFontSize(18);
+      doc.setTextColor(30, 30, 30);
+      doc.text(
+        "INFORME DE SEGUIMIENTO DE ESTUDIANTE",
+        doc.internal.pageSize.getWidth() / 2,
+        currentY,
+        { align: "center" }
+      );
+      currentY += 20;
 
-      // --- Sección de Datos del Estudiante ---
       doc.setFontSize(14);
       doc.setTextColor(60, 60, 60);
       doc.text("Datos del Estudiante:", margin, currentY);
       currentY += 8;
       doc.setFontSize(12);
-      doc.setTextColor(0, 0, 0); // Texto normal
-      doc.text(`Nombre completo: ${student.fullname || "N/A"}`, margin, currentY);
+      doc.setTextColor(0, 0, 0);
+      doc.text(
+        `Nombre completo: ${student.fullname || "N/A"}`,
+        margin,
+        currentY
+      );
       currentY += 7;
       doc.text(`ID Moodle: ${student.id}`, margin, currentY);
       currentY += 7;
-      doc.text(`Correo electrónico: ${student.email || "No disponible"}`, margin, currentY);
+      doc.text(
+        `Correo electrónico: ${student.email || "No disponible"}`,
+        margin,
+        currentY
+      );
       currentY += 7;
       doc.text(
         `Último acceso: ${
@@ -160,32 +183,24 @@ const StudentDetail = ({ student, onClose }) => {
         currentY
       );
       currentY += 7;
-      // Mostrar el progreso estimado correctamente
+
       doc.text(
         `Progreso estimado: ${
           student.progress !== undefined
-            ? `${student.progress}%` // Corregido: quitar el '+' antes del %
+            ? `${student.progress}%`
             : "No disponible"
         }`,
         margin,
         currentY
       );
-      currentY += 15; // Espacio después de los datos del estudiante
+      currentY += 15;
 
-      // --- Sección de Métricas Académicas ---
       doc.setFontSize(14);
       doc.setTextColor(60, 60, 60);
-      doc.text("Métricas Académicas:", margin, currentY);
+
       currentY += 8;
       doc.setFontSize(12);
       doc.setTextColor(0, 0, 0);
-      // Aquí, si tienes datos reales de Moodle API, deberías listarlos
-      doc.text("- Actividades completadas: N/D", margin + 5, currentY);
-      currentY += 7;
-      doc.text("- Tareas entregadas: N/D", margin + 5, currentY);
-      currentY += 7;
-      doc.text("- Tiempo en plataforma: N/D", margin + 5, currentY);
-      currentY += 15; // Espacio después de las métricas
 
       // --- Sección de Observaciones ---
       doc.setFontSize(14);
@@ -198,21 +213,21 @@ const StudentDetail = ({ student, onClose }) => {
         student.progress !== undefined && student.progress < 50
           ? `El estudiante presenta un progreso inferior al 50% (${student.progress}%). Se recomienda un acompañamiento académico más cercano para identificar las causas del bajo rendimiento y ofrecer un plan de apoyo que prevenga el riesgo de deserción.`
           : `El estudiante mantiene un desempeño adecuado (${student.progress}%) hasta la fecha en la plataforma Moodle. Se sugiere mantener el ritmo de estudio y participación activa para asegurar la culminación exitosa del curso.`;
-      
-      // Ajusta el ancho para que el texto se adapte al margen
-      const splitText = doc.splitTextToSize(observacion, doc.internal.pageSize.getWidth() - (2 * margin) - 5); // Resta 5 para el margen interno del texto
-      doc.text(splitText, margin + 5, currentY);
-      currentY += splitText.length * 5; // Ajusta Y por el número de líneas
-      currentY += 25; // Espacio adicional antes de la firma
 
-      // --- Sección de la firma ---
-      const firmaMaxWidth = 60; // Ancho máximo deseado para la firma en el PDF
-      const firmaMaxHeight = 25; // Altura máxima deseada para la firma en el PDF
+      const splitText = doc.splitTextToSize(
+        observacion,
+        doc.internal.pageSize.getWidth() - 2 * margin - 5
+      ); 
+      doc.text(splitText, margin + 5, currentY);
+      currentY += splitText.length * 5;
+      currentY += 25;
+
+      const firmaMaxWidth = 60;
+      const firmaMaxHeight = 25;
 
       let firmaWidth = firmaDocenteInfo.width;
       let firmaHeight = firmaDocenteInfo.height;
 
-      // Escalar la firma para que quepa en el ancho y alto máximos manteniendo el aspecto
       const firmaAspectRatio = firmaWidth / firmaHeight;
       if (firmaWidth > firmaMaxWidth) {
         firmaWidth = firmaMaxWidth;
@@ -224,19 +239,30 @@ const StudentDetail = ({ student, onClose }) => {
       }
 
       const firmaX = doc.internal.pageSize.getWidth() - margin - firmaWidth;
-      const firmaY = doc.internal.pageSize.getHeight() - margin - firmaHeight - 25; // Ajusta para dejar espacio para el texto
+      const firmaY =
+        doc.internal.pageSize.getHeight() - margin - firmaHeight - 25;
 
-      doc.addImage(firmaDocenteInfo.dataUrl, "PNG", firmaX, firmaY, firmaWidth, firmaHeight);
+      doc.addImage(
+        firmaDocenteInfo.dataUrl,
+        "PNG",
+        firmaX,
+        firmaY,
+        firmaWidth,
+        firmaHeight
+      );
       doc.text("_________________________", firmaX, firmaY + firmaHeight + 5);
       doc.text("Firma del Responsable", firmaX, firmaY + firmaHeight + 11);
       doc.text("C.C. XXXXXXXX / Cargo", firmaX, firmaY + firmaHeight + 17);
 
-      doc.save(`informe_${student.fullname.replace(/\s/g, '_') || "estudiante"}.pdf`);
+      doc.save(
+        `informe_${student.fullname.replace(/\s/g, "_") || "estudiante"}.pdf`
+      );
       alert("Informe generado correctamente.");
-
     } catch (error) {
       console.error("Error al generar el informe PDF:", error);
-      alert(`Ocurrió un error al generar el informe: ${error.message}. Por favor, verifica las rutas de las imágenes y la consola.`);
+      alert(
+        `Ocurrió un error al generar el informe: ${error.message}. Por favor, verifica las rutas de las imágenes y la consola.`
+      );
     } finally {
       setLoadingReport(false);
     }
@@ -290,10 +316,7 @@ const StudentDetail = ({ student, onClose }) => {
         isPanelOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div
-        className="absolute inset-0"
-        onClick={handleClosePanel}
-      ></div>
+      <div className="absolute inset-0" onClick={handleClosePanel}></div>
 
       <div
         ref={panelRef}
@@ -386,9 +409,25 @@ const StudentDetail = ({ student, onClose }) => {
           >
             {loadingReport ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Generando...
               </>
@@ -412,12 +451,12 @@ const StudentDetail = ({ student, onClose }) => {
               </h3>
             </div>
             <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg mb-4 resize-y text-gray-800"
-                rows="6"
-                placeholder="Escribe tu mensaje aquí..."
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-              ></textarea>
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4 resize-y text-gray-800"
+              rows="6"
+              placeholder="Escribe tu mensaje aquí..."
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+            ></textarea>
 
             <div className="flex justify-center gap-4">
               <button

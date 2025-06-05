@@ -55,7 +55,7 @@ console.log('students changed:', students);
     const accesoNormalizado =
       diasDesdeUltimoAcceso >= 30 ? 0 : ((30 - diasDesdeUltimoAcceso) / 30) * 100;
 
-    return Math.round((notaNormalizada + accesoNormalizado) / 2);
+    return Math.round((notaNormalizada* 0.55 + accesoNormalizado * 0.55) );
   };
 
   if (!students || students.length === 0) {

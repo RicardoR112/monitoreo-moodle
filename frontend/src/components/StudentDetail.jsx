@@ -371,7 +371,7 @@ const StudentDetail = ({ student, onClose }) => {
                     ${
                       student.progress >= 80
                         ? "bg-green-500"
-                        : student.progress >= 50
+                        : student.progress <= 50
                         ? "bg-yellow-500"
                         : "bg-red-500"
                     }`}
@@ -450,14 +450,7 @@ const StudentDetail = ({ student, onClose }) => {
                 {student.fullname}
               </h3>
             </div>
-            <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 resize-y text-gray-800"
-              rows="6"
-              placeholder="Escribe tu mensaje aquí..."
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-            ></textarea>
-
+        
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setShowMessageModal(false)}

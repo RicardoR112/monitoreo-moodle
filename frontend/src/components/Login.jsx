@@ -1,10 +1,8 @@
-// components/Login.jsx
-import React, { useState } from "react";
-// Ya no necesitamos importar 'api' ni 'BrowserRouter', 'Link', 'Route' aquí
-// import api from "../api";
-// import { BrowserRouter, Link, Route} from "react-router"; // Eliminar estas importaciones
 
-// Recibe `onLogin` como prop, que será la función que viene de App.jsx (LoginWrapper)
+import React, { useState } from "react";
+
+
+
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -12,23 +10,19 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Llama a la función onLogin pasada desde el componente padre (LoginWrapper en App.jsx)
-      // Le pasamos las credenciales y la función para controlar el modal de error
+      
       await onLogin(formData.username, formData.password, setShowErrorModal);
-      // Si onLogin no lanza un error, significa que el login fue exitoso y la redirección ocurrió
-      // Así que no necesitamos más lógica aquí, solo asegurarnos de que el modal se oculte si aún está visible
+      
       setShowErrorModal(false);
     } catch (error) {
-      // El error ya fue manejado (console.error, setShowErrorModal) por onLogin
-      // No necesitamos hacer nada más aquí, solo el catch para evitar un crash
+      
       console.error("Error capturado en Login.jsx:", error);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8 relative">
-      {/* Contenedor principal del login con sombra y efecto de glassmorphism */}
-      {/* CAMBIO AQUI: Añadido bg-white/70, backdrop-blur-md, border border-gray-200 */}
+     
       <div className="bg-white/70 shadow-xl rounded-3xl p-8 sm:p-10 w-full max-w-sm md:max-w-md transform transition-all duration-500 hover:scale-105 relative overflow-hidden backdrop-blur-md border border-gray-200">
 
         {/* Contenedor del Icono/Logo */}

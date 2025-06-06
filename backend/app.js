@@ -7,16 +7,12 @@ import authRoutes from "./routers/auth.js";
 import authMiddleware from "./middleware/auth.js";
 
 
-
-
-
-
 dotenv.config();
 connectDB();
 
 const app = express();
 const corsOptions = {
-  origin: '*', // o un array ['http://localhost:3000', 'https://tudominio.com']
+  origin: '*', 
   methods: 'GET,POST,PUT,DELETE',
   credentials: true, // si estás usando cookies o autenticación
 };

@@ -16,11 +16,13 @@ services:
     
     environment:
       NODE_ENV: development 
+      MONGODB_URI: "mongodb+srv://jaimericardo:jaime.321Monitoreo@cluster0.scefps7.mongodb.net/monitoreo"
+      restart: always
       
   frontend:
    
     build:
-      context: ./frontend/vite-project
+      context: ./frontend
       dockerfile: Dockerfile
     
     ports:
